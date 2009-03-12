@@ -1,7 +1,7 @@
 <?php
 /* 
 Plugin Name: Customfields Shortcode
-Version: 0.5
+Version: 0.6
 Description: Manage custom fields using the insert shortcodes [custom name="field-name" value="field-value"] or HTML conditional comments &lt;!--custom name="field-name" value="field-value"--&gt; in text of post. It's a hook for desktop blog clients, which don't support customfields natively.
 Plugin URI: http://iskariot.ru/wordpress/remix/#custom-short
 Author: Sergey M.
