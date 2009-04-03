@@ -2,7 +2,7 @@
 /* 
 Plugin Name: Customfields Shortcode
 Version: 0.6
-Description: Manage custom fields using the insert shortcodes [custom name="field-name" value="field-value"] or HTML conditional comments &lt;!--custom name="field-name" value="field-value"--&gt; in text of post. It's a hook for desktop blog clients, which don't support customfields natively.
+Description: Позволяет назначать любые произвольные поля, используя шорткоды вида [custom name="имя" value="значение"] или &lt;!--custom name="имя" value="значение"-->
 Plugin URI: http://iskariot.ru/wordpress/remix/#custom-short
 Author: Sergey M.
 Author URI: http://iskariot.ru/
@@ -51,7 +51,9 @@ function cfsc_add_customfield($post_ID) {
 }
 
 //Убираем все вхождения наших шоткодов
-add_shortcode('custom', 'cfsc_remove_shortcode');
+//для поддержки старых ВП проверяем
+if(function_exists('add_shortcode')) 
+	add_shortcode('custom', 'cfsc_remove_shortcode');
 function cfsc_remove_shortcode($atts) {
 	extract(shortcode_atts(array(
 	'name' => '',
