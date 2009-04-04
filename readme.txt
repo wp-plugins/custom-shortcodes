@@ -4,7 +4,7 @@ Donate link: http://iskariot.ru/wordpress/remix/#custom-short
 Tags: custom, custom fields, shortcodes, text, post, posts, page
 Requires at least: 2.0.2
 Tested up to: 2.7
-Stable tag: 0.7
+Stable tag: 1.0
 
 Manage custom fields using the insert shortcodes or HTML comment in text of post.
 
