@@ -1,12 +1,15 @@
 <?php
 /* 
 Plugin Name: Customfields Shortcode
-Version: 0.6
+Version: 0.8
 Description: Позволяет назначать любые произвольные поля, используя шорткоды вида [custom name="имя" value="значение"] или &lt;!--custom name="имя" value="значение"-->
 Plugin URI: http://iskariot.ru/wordpress/remix/#custom-short
 Author: Sergey M.
 Author URI: http://iskariot.ru/
 */ 
+/*
+Спасибо awtor (http://awtor.ru) за замечания по поводу соместимости со старыми версиями
+*/
 
 //Пытаемся поправить шоткоды в виде комментариев
 add_filter('content_save_pre', 'cfsc_right_shortcodes');
@@ -29,6 +32,8 @@ function cfsc_add_customfield($post_ID) {
 	
 	$n = count( $matches[1] );
 	for($i=0;$i<$n;$i++){
+		//правим кавычки для единообразия
+		$matches[1][$i]=str_replace("'",'"',$matches[1][$i]);
 		//вытаскиваем из них атрибуты
 		preg_match_all('~name\s*=\s*"([^"]*?)"~',$matches[1][$i],$reg);
 		$name=$reg[1][0];
@@ -43,30 +48,20 @@ function cfsc_add_customfield($post_ID) {
 				}
 				else{
 				//вставляем в БД если значение не пустое
-				update_post_meta( $post_ID, $name, $value );
+				//для совместимости с 2.3
+				add_post_meta ($post_ID,$name,$value,true) 
+					or update_post_meta( $post_ID, $name, $value );
 				}
 			//кеш обновит он сам
 			}
 		}//for
 }
 
-//Убираем все вхождения наших шоткодов
-//для поддержки старых ВП проверяем
-if(function_exists('add_shortcode')) 
-	add_shortcode('custom', 'cfsc_remove_shortcode');
-function cfsc_remove_shortcode($atts) {
-	extract(shortcode_atts(array(
-	'name' => '',
-	'value' => '',
-	), $atts));
-	//на самом деле, все это - только для того, чтобы не отображать псевдотег
-	return "";
-}
-
-//Убираем все вхождения наших шоткодов в виду комментариев - на всякий случай
-add_filter('the_content', 'cfsc_remove_shortcode2',6);
-function cfsc_remove_shortcode2($content) {
+//Убираем все вхождения наших шоткодов и условных комментариев
+add_filter('the_content', 'cfsc_remove_shortcode',6);
+function cfsc_remove_shortcode($content) {
 	$content=preg_replace('~(\<|&lt;)!--custom\s(.*?)--(>|&gt;)~i','',$content);
+	$content=preg_replace('~\[custom\s(.*?)\]~i','',$content);
 	return $content;
 }
 
