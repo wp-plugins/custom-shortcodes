@@ -1,7 +1,7 @@
 <?php
 /* 
 Plugin Name: Customfields Shortcode
-Version: 0.8
+Version: 1.0
 Description: Позволяет назначать любые произвольные поля, используя шорткоды вида [custom name="имя" value="значение"] или &lt;!--custom name="имя" value="значение"-->
 Plugin URI: http://iskariot.ru/wordpress/remix/#custom-short
 Author: Sergey M.
@@ -32,12 +32,18 @@ function cfsc_add_customfield($post_ID) {
 	
 	$n = count( $matches[1] );
 	for($i=0;$i<$n;$i++){
-		//правим кавычки для единообразия
-		$matches[1][$i]=str_replace("'",'"',$matches[1][$i]);
 		//вытаскиваем из них атрибуты
 		preg_match_all('~name\s*=\s*"([^"]*?)"~',$matches[1][$i],$reg);
+			//это если кавычки одиночные
+		if(empty($reg[1][0])) {
+			preg_match_all("~name\s*=\s*'([^']*?)'~",$matches[1][$i],$reg);
+			}
 		$name=$reg[1][0];
 		preg_match_all('~value\s*=\s*"([^"]*?)"~',$matches[1][$i],$reg);
+			//это если кавычки одиночные
+		if(empty($reg[1][0])) {
+			preg_match_all("~value\s*=\s*'([^']*?)'~",$matches[1][$i],$reg);
+			}
 		$value=$reg[1][0];
 		
 		//если есть такое имя
